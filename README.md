@@ -7,9 +7,7 @@
 **Open-source, self-hosted project management**, by [Stratzi](http://stratzi.ai/).
 
 <p>
-  <!-- Enable once github.com/Stratzi-Tech/grid is public and CI has run on develop:
   <a href="https://github.com/Stratzi-Tech/grid/actions/workflows/ci.yml"><img src="https://github.com/Stratzi-Tech/grid/actions/workflows/ci.yml/badge.svg?branch=develop" alt="CI"></a>
-  -->
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/version-1.0.0-orange.svg" alt="Version 1.0.0">
   <img src="https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+">
