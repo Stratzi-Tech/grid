@@ -139,7 +139,7 @@ async def get_release_dict(release: dict, project_id: int, release_tickets_colle
     }
 
 
-@router.get("/", response_model=List[ReleaseOut])
+@router.get("", response_model=List[ReleaseOut])
 async def list_releases(
     project_id: int,
     db: Annotated[AsyncIOMotorDatabase, Depends(get_mongo_db)],
@@ -182,7 +182,7 @@ async def list_releases(
     return result
 
 
-@router.post("/", response_model=ReleaseOut, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ReleaseOut, status_code=status.HTTP_201_CREATED)
 async def create_release(
     project_id: int,
     release_in: ReleaseCreate,

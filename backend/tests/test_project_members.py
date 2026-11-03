@@ -28,7 +28,7 @@ async def create_project(api, key="WEB", name="Website", members=None):
     body = {"key": key, "name": name, "visibility": "private"}
     if members is not None:
         body["members"] = members
-    resp = await api.post("/projects/", json=body)
+    resp = await api.post("/projects", json=body)
     assert resp.status_code == 201, resp.text
     return resp.json()["id"]
 

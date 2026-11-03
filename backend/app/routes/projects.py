@@ -121,7 +121,7 @@ async def verify_project_access(
   return member is not None
 
 
-@router.get("/", response_model=List[ProjectOut])
+@router.get("", response_model=List[ProjectOut])
 async def list_projects(
   db: Annotated[AsyncIOMotorDatabase, Depends(get_mongo_db)],
   current_user: Annotated[CurrentUser, Depends(get_current_user)],
@@ -301,7 +301,7 @@ async def list_projects(
   return result
 
 
-@router.post("/", response_model=ProjectOut, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ProjectOut, status_code=status.HTTP_201_CREATED)
 async def create_project(
   project_in: ProjectCreate,
   db: Annotated[AsyncIOMotorDatabase, Depends(get_mongo_db)],
