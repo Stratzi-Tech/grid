@@ -24,7 +24,13 @@ async function errorFromResponse(res: Response, method: string, path: string): P
   } catch {
     // Body absent or not JSON — keep the default status message.
   }
-  return new Error(message);
+  // Carry the HTTP status so callers can react to a specific one (e.g. a 409 conflict).
+  return Object.assign(new Error(message), { status: res.status });
+}
+
+/** The HTTP status of an error thrown by the api helpers, if it came from a response. */
+export function apiErrorStatus(error: unknown): number | undefined {
+  return (error as { status?: number } | null)?.status;
 }
 
 export async function apiGet<T>(path: string, init?: RequestInit): Promise<T> {

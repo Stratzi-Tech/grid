@@ -7,6 +7,7 @@ import {
   Route,
   Users,
   Zap,
+  FileText,
   Settings,
 } from 'lucide-react';
 
@@ -49,6 +50,7 @@ export const NAV_CATALOG: NavCatalogItem[] = [
 
   { id: 'releases', label: 'Releases', icon: Package, section: 'development', href: (id) => `/projects/${id}/releases` },
 
+  { id: 'wiki', label: 'Wiki', icon: FileText, section: 'operations', href: (id) => `/projects/${id}/wiki` },
   { id: 'members', label: 'Members', icon: Users, section: 'operations', href: (id) => `/projects/${id}/members` },
 
   { id: 'settings', label: 'Settings', icon: Settings, section: 'project', href: (id) => `/projects/${id}/settings`, alwaysVisible: true },

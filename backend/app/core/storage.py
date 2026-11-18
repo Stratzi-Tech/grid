@@ -1,8 +1,8 @@
 """Where uploaded files live — one place that decides, one guard that protects.
 
-Every upload in the app (ticket attachments, lifecycle stage attachments) goes
-through this module instead of each route computing its own directory. That gives
-us:
+Every upload in the app (ticket attachments, lifecycle stage attachments, wiki
+attachments) goes through this module instead of each route computing its own
+directory. That gives us:
 
   * one setting that chooses the location (``APP_STORAGE_URL`` — see
     ``app/core/settings.py``), rather than three hard-coded paths, two of which
@@ -10,15 +10,15 @@ us:
   * one path guard, so a stored key can never resolve outside its folder (the
     path-traversal protection each route used to re-implement by hand).
 
-Layout. Files are grouped by *category* (``tickets`` / ``lifecycle``) and
-addressed by a *key* within that category::
+Layout. Files are grouped by *category* (``tickets`` / ``lifecycle`` / ``wiki``)
+and addressed by a *key* within that category::
 
     <root>/<category>/<key>
 
-The key is usually a bare filename, though a category may use ``<sub>/<name>`` to
-keep related files together. Keys are treated as relative and sanitised — any
-``..`` or absolute component is rejected — so a value read back from the database
-can never point at an arbitrary file on disk.
+The key is usually a bare filename; wiki uses ``<project_id>/<name>`` so a
+project's attachments stay together. Keys are treated as relative and sanitised
+— any ``..`` or absolute component is rejected — so a value read back from the
+database can never point at an arbitrary file on disk.
 
 Backends. The location comes from ``APP_STORAGE_URL``:
 
@@ -53,7 +53,7 @@ from .settings import BASE_DIR, get_settings
 
 # The categories the app stores files under. Kept explicit so a typo in a route
 # ("ticket" vs "tickets") fails loudly instead of creating a stray folder.
-CATEGORIES = ("tickets", "lifecycle")
+CATEGORIES = ("tickets", "lifecycle", "wiki")
 
 
 class StorageError(RuntimeError):
@@ -68,7 +68,7 @@ def _clean_key(category: str, key: str) -> str:
     otherwise climb out of the category folder. Back-slashes are normalised to
     ``/`` and empty / ``.`` segments dropped, so an absolute-looking or
     Windows-style value is pinned to a plain relative key inside the category.
-    ``key`` may legitimately carry sub-folders (e.g. ``<sub>/<name>``).
+    ``key`` may legitimately carry sub-folders (wiki uses ``<project_id>/<name>``).
     """
     if category not in CATEGORIES:
         raise StorageError(f"Unknown storage category: {category!r}")
@@ -142,8 +142,8 @@ class CloudStorage:
         self._root = root  # a cloudpathlib CloudPath (or a local test double)
 
     def _resolve(self, category: str, key: str):
-        # Join one segment at a time so a multi-part key can't be misread, and
-        # _clean_key has already stripped any ".." / absolute parts.
+        # Join one segment at a time so a multi-part key (wiki) can't be
+        # misread, and _clean_key has already stripped any ".." / absolute parts.
         path = self._root / category
         for part in _clean_key(category, key).split("/"):
             path = path / part

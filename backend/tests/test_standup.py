@@ -10,6 +10,17 @@ from app.services.standup_time import IST, ist_today
 
 pytestmark = pytest.mark.anyio
 
+
+@pytest.fixture
+def on_tuesday(monkeypatch):
+    """Pin the route's notion of "today" to TUESDAY.
+
+    The editable-date rule (today and the next working day) is measured against the
+    real clock, so tests that use the fixed TUESDAY date stop passing once that date
+    is in the past.
+    """
+    monkeypatch.setattr("app.routes.standup.ist_today", lambda: TUESDAY)
+
 TUESDAY = date(2026, 9, 15)   # window: Monday 2026-09-14
 MONDAY = date(2026, 9, 14)    # window: Friday 2026-09-11 .. Monday 00:00
 
@@ -138,7 +149,7 @@ async def test_board_is_empty_until_people_add_things(api, mongo_db):
     assert monday["yesterday_window"]["since_label"] == "Since Friday"
 
 
-async def test_added_tickets_show_live_ticket_state(api, mongo_db):
+async def test_added_tickets_show_live_ticket_state(api, mongo_db, on_tuesday):
     await seed(mongo_db)
     day = TUESDAY.isoformat()
     assert (await api.put("/standup/items/yesterday", json={"email": RAVI, "date": day, "ticket_id": 14})).status_code == 200
@@ -229,7 +240,7 @@ async def test_pin_validation(api, mongo_db):
     assert too_old.status_code == 400
 
 
-async def test_yesterday_add_and_remove(api, mongo_db):
+async def test_yesterday_add_and_remove(api, mongo_db, on_tuesday):
     await seed(mongo_db)
     day = TUESDAY.isoformat()
     for ticket_id in (22, 22, 11):
@@ -250,7 +261,7 @@ async def test_yesterday_add_and_remove(api, mongo_db):
     assert keys(meera["yesterday"]["items"]) == ["WEB-11"]
 
 
-async def test_yesterday_add_validation(api, mongo_db):
+async def test_yesterday_add_validation(api, mongo_db, on_tuesday):
     await seed(mongo_db)
     day = TUESDAY.isoformat()
     assert (await api.put("/standup/items/yesterday", json={"email": OUTSIDER, "date": day, "ticket_id": 20})).status_code == 422
@@ -261,7 +272,7 @@ async def test_yesterday_add_validation(api, mongo_db):
     assert (await api.put("/standup/items/yesterday", json={"email": MEERA, "date": day, "ticket_id": 16})).status_code == 200
 
 
-async def test_blocker_tickets_added_by_hand(api, mongo_db):
+async def test_blocker_tickets_added_by_hand(api, mongo_db, on_tuesday):
     await seed(mongo_db)
     day = TUESDAY.isoformat()
     # WEB-17 isn't in a blocked status; WEB-15 already is (Ravi)
@@ -284,7 +295,7 @@ async def test_blocker_tickets_added_by_hand(api, mongo_db):
     assert person(board, MEERA)["blockers"] == []
 
 
-async def test_blocker_notes_lifecycle(api, mongo_db):
+async def test_blocker_notes_lifecycle(api, mongo_db, on_tuesday):
     await seed(mongo_db)
     day = TUESDAY.isoformat()
     created = await api.post("/standup/blockers", json={"email": MEERA, "date": day, "text": "  Waiting on design sign-off  "})
@@ -307,7 +318,7 @@ async def test_blocker_notes_lifecycle(api, mongo_db):
     assert await mongo_db.standup_blocker_notes.count_documents({}) == 0
 
 
-async def test_blocker_note_validation(api, mongo_db):
+async def test_blocker_note_validation(api, mongo_db, on_tuesday):
     await seed(mongo_db)
     day = TUESDAY.isoformat()
     assert (await api.post("/standup/blockers", json={"email": MEERA, "date": day, "text": "   "})).status_code == 422

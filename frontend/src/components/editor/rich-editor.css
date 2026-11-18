@@ -1,0 +1,172 @@
+/* Content styling for the wiki editor and the wiki page view (both render through TipTap). */
+
+.rich-prose {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #172B4D;
+}
+
+.rich-prose .ProseMirror {
+  outline: none;
+  min-height: var(--rich-min-height, 320px);
+}
+
+.rich-prose.is-editing .ProseMirror {
+  padding-bottom: 160px;
+}
+
+/* Compact: the box used in modals and comments. No spare room under the text, and a size that
+   suits a form rather than a document. */
+.rich-prose.is-compact {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.rich-prose.is-compact .ProseMirror {
+  min-height: var(--rich-min-height, 96px);
+  padding-bottom: 0;
+}
+.rich-frame {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: border-color 0.15s;
+}
+/* The same focus colour as the rest of the app's form fields: the primary blue (#0052CC) on a
+   plain border, no glow. The editor used a lighter blue before and stood out from its neighbours. */
+.rich-frame:focus-within {
+  border-color: #0052CC;
+}
+
+/* @mentions, in the editor and in saved text. */
+.rich-prose .rich-mention {
+  color: #0C66E4;
+  font-weight: 600;
+}
+
+.rich-prose .ProseMirror > * + * { margin-top: 0.75em; }
+
+.rich-prose h1, .rich-prose h2, .rich-prose h3, .rich-prose h4 {
+  color: #172B4D;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 1.5em;
+  margin-bottom: 0.4em;
+  scroll-margin-top: 80px;
+}
+.rich-prose h1 { font-size: 1.9em; letter-spacing: -0.02em; }
+.rich-prose h2 { font-size: 1.5em; letter-spacing: -0.01em; }
+.rich-prose h3 { font-size: 1.2em; }
+.rich-prose h4 { font-size: 1.05em; }
+.rich-prose .ProseMirror > :first-child { margin-top: 0; }
+
+.rich-prose p { margin: 0; }
+
+.rich-prose ul, .rich-prose ol { padding-left: 1.6em; margin: 0; }
+.rich-prose ul { list-style: disc; }
+.rich-prose ol { list-style-type: decimal; }
+/* "a. ", "A. ", "i. " and "I. " start lists with these styles (the editor sets the type
+   attribute). The default rule above would otherwise override that and show 1., 2., 3. */
+.rich-prose ol[type='a'] { list-style-type: lower-alpha; }
+.rich-prose ol[type='A'] { list-style-type: upper-alpha; }
+.rich-prose ol[type='i'] { list-style-type: lower-roman; }
+.rich-prose ol[type='I'] { list-style-type: upper-roman; }
+.rich-prose li { margin: 0.2em 0; }
+.rich-prose li > p { margin: 0; }
+
+.rich-prose ul[data-type='taskList'] { list-style: none; padding-left: 0.2em; }
+.rich-prose ul[data-type='taskList'] li { display: flex; align-items: flex-start; gap: 8px; }
+.rich-prose ul[data-type='taskList'] li > label { margin-top: 0.35em; user-select: none; }
+.rich-prose ul[data-type='taskList'] li > div { flex: 1; min-width: 0; }
+.rich-prose ul[data-type='taskList'] li[data-checked='true'] > div {
+  color: #6B778C;
+  text-decoration: line-through;
+}
+
+.rich-prose a { color: #0052CC; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.rich-prose a:hover { color: #0747A6; }
+
+.rich-prose blockquote {
+  margin-left: 0;
+  padding: 2px 0 2px 16px;
+  border-left: 3px solid #DFE1E6;
+  color: #42526E;
+}
+
+.rich-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: #F4F5F7;
+  border-radius: 3px;
+  padding: 0.12em 0.35em;
+}
+.rich-prose pre {
+  background: #F4F5F7;
+  border-radius: 6px;
+  padding: 12px 14px;
+  overflow-x: auto;
+}
+.rich-prose pre code { background: none; padding: 0; font-size: 13px; }
+
+.rich-prose hr { border: none; border-top: 1px solid #DFE1E6; margin: 1.5em 0; }
+
+/* Tables */
+.rich-prose .tableWrapper { overflow-x: auto; margin: 1em 0; }
+.rich-prose table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+.rich-prose th, .rich-prose td {
+  border: 1px solid #DFE1E6;
+  padding: 8px 10px;
+  vertical-align: top;
+  text-align: left;
+  position: relative;
+  min-width: 80px;
+}
+.rich-prose th { background: #F4F5F7; font-weight: 600; }
+.rich-prose td > p, .rich-prose th > p { margin: 0; }
+.rich-prose .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(76, 154, 255, 0.18);
+  pointer-events: none;
+}
+
+/* Placeholder on the empty first line */
+.rich-prose .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #A5ADBA;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.rich-prose .ProseMirror-selectednode { outline: 2px solid #4C9AFF; }
+
+/* Hover preview from the colour picker. !important so it also covers text that already has
+   its own colour, which sits on an inner element and would otherwise win. */
+.rich-prose .wiki-preview-text,
+.rich-prose .wiki-preview-text * {
+  color: var(--wiki-preview) !important;
+}
+.rich-prose .wiki-preview-bg,
+.rich-prose .wiki-preview-bg * {
+  background-color: var(--wiki-preview) !important;
+}
+
+/*
+ * Selected text. The browser default is a solid blue background with white text, which
+ * hides the very thing the colour picker changes: pick red, and the selection still looks
+ * blue-on-white until you click away. A translucent tint (and no forced text colour) keeps
+ * the colour and highlight visible while the text is selected.
+ */
+.rich-prose .ProseMirror::selection,
+.rich-prose .ProseMirror ::selection {
+  background: rgba(76, 154, 255, 0.28);
+}
+.rich-prose .ProseMirror::-moz-selection,
+.rich-prose .ProseMirror ::-moz-selection {
+  background: rgba(76, 154, 255, 0.28);
+}

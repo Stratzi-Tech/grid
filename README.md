@@ -80,6 +80,7 @@ first admin, no SaaS account anywhere in the loop.
 - **Standups**: an async standup screen with history.
 - **Lifecycle**: track a project through its stages, separately from ticket
   status.
+- **Wiki**: per-project pages with nesting, version history and file attachments.
 - **Watchers and notifications**: follow a ticket, get told when it moves.
 - **Search and saved filters**: a query language over tickets, with filters
   you can name and reuse.
