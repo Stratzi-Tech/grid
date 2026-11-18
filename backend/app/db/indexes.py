@@ -182,6 +182,32 @@ CORE_INDEXES: IndexGroup = {
 }
 
 
+# Wiki pages are read by project and parent, versions by page, and the per-user
+# star and recent lists by user. The unique star index also keeps a double-click on
+# the star from creating two rows.
+WIKI_INDEXES: IndexGroup = {
+  "wiki_pages": [
+    ([("page_number", 1)], {}),
+    ([("project_id", 1), ("parent_id", 1)], {}),
+    ([("project_id", 1), ("slug", 1)], {}),
+  ],
+  "wiki_versions": [
+    ([("page_number", 1), ("version_number", -1)], {}),
+  ],
+  "wiki_stars": [
+    ([("user_email", 1), ("page_number", 1)], {"unique": True, "name": "wiki_stars_unique"}),
+  ],
+  "wiki_views": [
+    ([("user_email", 1), ("page_number", 1)], {"unique": True, "name": "wiki_views_unique"}),
+    ([("user_email", 1), ("project_id", 1), ("viewed_at", -1)], {}),
+  ],
+  "wiki_attachments": [
+    ([("project_id", 1), ("page_slug", 1)], {}),
+    ([("id", 1)], {}),
+  ],
+}
+
+
 def _merge(*groups: IndexGroup) -> IndexGroup:
   merged: IndexGroup = {}
   for group in groups:
@@ -192,7 +218,7 @@ def _merge(*groups: IndexGroup) -> IndexGroup:
 
 ALL_INDEXES: IndexGroup = _merge(
   CORE_INDEXES, STANDUP_INDEXES, LIFECYCLE_INDEXES, TEAM_VIEW_INDEXES, OAUTH_INDEXES,
-  ISSUE_LIST_INDEXES,
+  ISSUE_LIST_INDEXES, WIKI_INDEXES,
 )
 
 

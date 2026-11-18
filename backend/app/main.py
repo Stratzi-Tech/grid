@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
-from .routes import health, capabilities, auth, projects, tickets, dashboard, admin, slack, epics, skills, recommendations, google_sync, status, releases, status_reports, sprints, subtasks, issue_links, watchers, reports, workflows, worklogs, organization, integrations
+from .routes import health, capabilities, auth, projects, wiki, tickets, dashboard, admin, slack, epics, skills, recommendations, google_sync, status, releases, status_reports, sprints, subtasks, issue_links, watchers, reports, workflows, worklogs, organization, integrations
 from .routes import settings as settings_routes
 from .routes import project_import
 from .routes import lifecycle
@@ -109,6 +109,7 @@ def create_app() -> FastAPI:
   app.include_router(health.router)
   app.include_router(capabilities.router)
   app.include_router(auth.router)
+  app.include_router(wiki.router)
   app.include_router(organization.router)
   app.include_router(projects.router)
   # Register settings router before tickets router to ensure /projects/{id}/settings routes are matched correctly

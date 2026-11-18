@@ -7,3 +7,4 @@ export { SettingsIcon } from './SettingsIcon';
 export { TeamManagementIcon } from './TeamManagementIcon';
 export { StatusIcon } from './StatusIcon';
 export { ReleaseIcon } from './ReleaseIcon';
+export { WikiIcon } from './WikiIcon';

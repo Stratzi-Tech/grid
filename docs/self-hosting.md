@@ -371,7 +371,7 @@ feature; nothing else breaks.
 
 ### File storage
 
-Uploaded attachments (ticket files, lifecycle documents) are stored
+Uploaded attachments (ticket files, lifecycle documents, wiki files) are stored
 on **local disk by default**, under a `data/uploads` folder at the project root
 — outside the source tree, and the same path on Linux, Windows and macOS. Under
 Docker that path is `/app/uploads`, the named volume, so it is already covered
